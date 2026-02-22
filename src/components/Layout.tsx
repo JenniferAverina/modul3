@@ -1,22 +1,41 @@
-import type { PropsWithChildren } from "react";
+import { useEffect, type PropsWithChildren } from "react";
 import { useAppSelector } from "../hooks/useAppSelector";
-import { AppBar, Box, Button, Stack, Toolbar } from "@mui/material";
-import { Link } from "react-router";
+import { AppBar, Box, Button, Stack, Toolbar, Typography } from "@mui/material";
+import { Link, useNavigate } from "react-router";
 
 export function Layout(props: PropsWithChildren) {
     const userInfo = useAppSelector(state => state.auth.userInfo);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Tiap kali aplikasi pertama kali load (refresh), pindah ke /
+        navigate('/');
+    }, []);
 
     return <Stack>
-        <AppBar position="static">
+        <AppBar position="static" sx={{ mb: 3 }}>
             <Toolbar>
                 <Box display='flex' justifyContent="space-between" flexGrow={1}>
-                    <Box/>
+                    <Box display='flex' gap={2}>
+                        <Typography variant="h6" sx={{ mr: 2, fontWeight: 'bold' }}>
+                            Intro-React
+                        </Typography>
+
+                        <Button color="inherit" component={Link} to="/">
+                            HomePage
+                        </Button>
+                        <Button color="inherit" component={Link} to="/post">
+                            PostList
+                        </Button>
+                    </Box>
                     <Box>
                         {!userInfo && <Link to='/login'><Button>Login</Button></Link>}
                     </Box>
                 </Box>
             </Toolbar>
         </AppBar>
-        {props.children}
+        <Box sx={{ px: 3 }}>
+            {props.children}
+        </Box>
     </Stack>
 }
